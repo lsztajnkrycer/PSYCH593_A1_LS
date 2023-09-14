@@ -1,6 +1,7 @@
 COMMIT 1*: Modify style to align with Tidyverse where I missed instances of this:
+COMPLETED
 
-- plot code (e.g. lines 237-242)
+- plot code (e.g. lines** 237-242)
 
 - indentation in:
   - Lines 305-309
@@ -16,6 +17,7 @@ COMMIT 1*: Modify style to align with Tidyverse where I missed instances of this
 
 
 COMMIT 2*: Add comments and alter explanations to improve file (especially knitted) readability:
+PARTLY COMPLETED (more comments and out-of-block descriptions)
 
 - Bracketed notes describing the purpose of each cell don't show on knitted files (oops).
 I need to add comments mirroring or slightly elaborating on the bracketed notes so that they can be read in html.
@@ -31,15 +33,26 @@ I need to add comments mirroring or slightly elaborating on the bracketed notes 
 COMMIT 3*: Modify Visuals and add code
 
 
-*Note that this is the plan; additional commits may be required.
+*NOTE 1: that this is the plan; additional commits may be required.
 Additionally, each of these commits take place after the base 2 required to set up the repository.
 So these are more like commits 3,4,5, than 1,2,3.
 
 - I can modify the ASFR/ASDR histograms to include overlapping data for easier comparison.
+  - Although Q5 (for the ASDR plots) only calls for calculation of ASDR in the 2005-10 period,
+    I think that the question can only be properly answered if we compare our results to the
+    initial 50s period, so I am keeping both periods.
 
 - I can change axes (notably the x-axis) to be more readable on said histograms.
 
 - I can figure out how to insert r code into discussions when appropriate.
+
+- Update HTML printout, as I have altered the graphs at this point
+
+
+**NOTE 2: My peer reviewer must have been using a different text editor than qmd,
+as the lines mentioned in the review do not add up with the lines on my editor
+(e.g. at one point, lines 447-452 are mentioned, but my code only seems to go up to 351).
+I will do the best I can with the revisions, regardless.
 
 
 

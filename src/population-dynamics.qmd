@@ -18,7 +18,7 @@ editor: visual
 Understanding population dynamics is important for many areas of social science. We will calculate some basic demographic quantities of births and deaths for the world's population from two time periods: 1950 to 1955 and 2005 to 2010. We will analyze the following CSV data files - `Kenya.csv`, `Sweden.csv`, and `World.csv`. Each file contains population data for Kenya, Sweden, and the world, respectively. The table below presents the names and descriptions of the variables in each data set.
 
 | Name       | Description                                                                             |
-|:-----------|:----------------------------------------------------------------------------------------|
+|:--------------------|:--------------------------------------------------|
 | `country`  | Abbreviated country name                                                                |
 | `period`   | Period during which data are collected                                                  |
 | `age`      | Age group                                                                               |
@@ -85,8 +85,8 @@ When questions contain special blocks (i.e. more than the 2 listed above), I wil
 ```{r person-years-function-data}
 
 create_py <- function(dataset) {
-  # for any chosen dataset, combines the men and women per-year amounts into a total, per-year variable.
-  #We need this total to compute the Crude Birth Rate of any country.
+  # For any chosen dataset, combines the men and women per-year amounts into a total, per-year variable.
+  # We need this total to compute the Crude Birth Rate of any country
   dataset$py.men + dataset$py.women
 }
 
@@ -103,8 +103,8 @@ Below is a second function block. The first block defines a function to compute 
 ```{r CBR-function}
 # Function to compute the Crude Birth Rate (CBR)
 # The "pipe" `%>%` from package `magrittr` takes the output from the left hand side and makes it the first argument of the expression on the right hand side,
-compute_cbr <- function(population_data) {
-  population_data %>%
+compute_cbr <- function(pop_data) {
+  pop_data %>%
     group_by(period) %>% 
       summarise(cbr = sum(births) / sum(py)) %>% # Summary based on equation given above
         pull()
@@ -114,9 +114,9 @@ compute_cbr <- function(population_data) {
 ```{r compute-CBR}
 # Compute the CBR for each data set
 # NOTE: putting () around each of the variables seems to cause their output to display. Keeping it this way for convenience of display.
-(world_cbr  <-compute_cbr(world_data)) 
-(kenya_cbr  <-compute_cbr(kenya_data))
-(sweden_cbr <-compute_cbr(sweden_data))
+(world_cbr  <- compute_cbr(world_data)) 
+(kenya_cbr  <- compute_cbr(kenya_data))
+(sweden_cbr <- compute_cbr(sweden_data))
 ```
 
 ### Discussion 1:
@@ -135,11 +135,12 @@ The CBR is easy to understand but contains both men and women of all ages in the
 ### Answer 2
 
 ```{r ASFR-function}
+
 compute_asfr <- function(pop_data) {
   # Function to compute Age specific fertility rate (ASFR)
   # Note that we do not have to compute a summary, nor the 5-year age ranges, because those are already nicely arranged by the cells in the data. We just have to compute an ASFR for each 5-year age row.
   pop_data %>% 
-    mutate(asfr=births / py.women)
+    mutate(asfr = births / py.women)
 }
 ```
 
@@ -152,8 +153,10 @@ sweden_data <- compute_asfr(sweden_data)
 
 This 3rd block allows us to numerically compare asfr counts for Kenya and Sweden, but it is a little hard to interpret.
 
-```{r ASFR-comparison}
+```{r ASFR-comparison, message=FALSE}
 # Compare ASFRs for Kenya and Sweden
+# Output suppressed by recommendation. Histograms are used for more effective 
+# comparison below.
 kenya_data$asfr
 sweden_data$asfr
 ```
@@ -163,9 +166,22 @@ sweden_data$asfr
 Printing the columns doesn't give us a very good indication of how Kenya and Sweden compare, so I'll make a quick and dirty barplot with asfr on the y axis and age on the x axis:
 
 ```{r histograms-for-ASFR}
-barplot(height = kenya_data$asfr, names = kenya_data$age,col='darksalmon',main='Kenya ASFR by age',xlab='Age',ylab='ASFR')
+# Generates a barplot that describes Kenya's ASFR's by age. Split by Period.
+barplot(height = kenya_data$asfr, 
+        names = kenya_data$age, 
+        col = 'darksalmon', # Ensures column color for Kenya is reddish
+        main = 'Kenya ASFR by age',
+        xlab = 'Age', 
+        ylab = 'ASFR')
 
-barplot(height = sweden_data$asfr, names = sweden_data$age,col='steelblue',main='Sweden ASFR by age',xlab='Age',ylab='ASFR')
+
+# Another barplot, this time describing Sweden's ASFR's by age.
+barplot(height = sweden_data$asfr, 
+        names = sweden_data$age,
+        col = 'steelblue', # In contrast, column color for Sweden is blueish
+        main = 'Sweden ASFR by age',
+        xlab = 'Age',
+        ylab = 'ASFR')
 
 ```
 
@@ -189,11 +205,13 @@ We multiply each age-specific fertility rate rate by 5 because the age range is 
 
 ```{r TFR-function}
 # Function to compute the total fertility rate (TFR)
+# Note that this computes TFR for each time period, 
+# rather than the total across both periods.
 
-compute_tfr <- function(population_data) {
-  population_data %>% 
+compute_tfr <- function(pop_data) {
+  pop_data %>% 
     group_by(period) %>% 
-      summarise(tfr=5 *sum(asfr)) %>% 
+      summarise(tfr = 5 * sum(asfr)) %>% 
         pull()
 }
 ```
@@ -212,13 +230,13 @@ The block below uses a pipline to give us a measure of *total* births, rather th
 (
   world_data %>% 
   group_by(period) %>% 
-  summarise(total_women=sum(py.women),
-  total_births=sum(births)) ->
+  summarise(total_women = sum(py.women),
+  total_births = sum(births)) ->
   totals_world
 )
 
 # Compare how much these totals have changed
-(changes_totals <- totals_world[2,-1] / totals_world[1,-1])
+(changes_totals <- totals_world[2, -1] / totals_world[1, -1])
 ```
 
 ### Discussion 3
@@ -233,9 +251,12 @@ Next, we will examine another important demographic process: death. Compute the 
   $$ Briefly describe patterns you observe in the resulting CDRs.
 
 ```{r CDR-function}
-# Function to compute the Crude death rate (CDR)
-compute_cdr <- function(population_data) {
-  population_data %>% 
+# Function to compute the Crude death rate (CDR).
+# Again, this function computes CDR by period, and not total CDR across both periods.
+# It uilizes the formula provided above to do so.
+
+compute_cdr <- function(pop_data) {
+  pop_data %>% 
     group_by(period) %>% 
       summarise(cbr = sum(deaths) / sum(py)) %>% 
         pull()
@@ -267,11 +288,16 @@ One puzzling finding from the previous question is that the CDR for Kenya during
                {\text{number of person-years of people of age $[x,\ x+\delta)$}}
   $$ Calculate the ASDR for each age group, separately for Kenya and Sweden, during the period of 2005-2010. Briefly describe the pattern you observe.
 
+**NOTE:** Although this question only calls for calculation of ASDR in the 2005-10 period, I think that the question can only be properly answered if we compare our results to the initial 50s period, so I am keeping both periods. See the discussion for a proper comparison.
+
 ```{r ASDR-function}
-# Function to compute Age specific death rate (ASDR)
+# Function to compute Age specific death rate (ASDR).
+# Again, we mutate instead of summarize the data 
+# because it is already split into nice 5-year age gaps.
+
 compute_asdr <- function(pop_data) {
 pop_data %>% 
-mutate(asdr=deaths/py) #again, we mutate instead of summarize the data because it is already split into nice 5-year age gaps
+mutate(asdr = deaths / py)
 }
 ```
 
@@ -289,11 +315,36 @@ sweden_data <- compute_asdr(sweden_data)
 We will once more plot this data for easier visualization
 
 ```{r histograms-for-ASDR}
-barplot(height = kenya_data$asdr, names = kenya_data$age,col='darksalmon',main='Kenya ASDR by age',xlab='Age',ylab='ASDR')
+# Generate barplots which describe ASDR's by age, split by period,
+# for each dataset.
+# Using same column colors for each dataset (red for kenya).
+# For world data, we use green columns
 
-barplot(height = sweden_data$asdr, names = sweden_data$age,col='steelblue',main='Sweden ASDR by age',xlab='Age',ylab='ASDR')
+# Barplot for Kenya
+barplot(height = kenya_data$asdr,
+        names = kenya_data$age,
+        col = 'darksalmon',
+        main = 'Kenya ASDR by age',
+        xlab = 'Age',
+        ylab = 'ASDR')
 
-barplot(height = world_data$asdr, names = world_data$age,col='darkolivegreen',main='World ASDR by age',xlab='Age',ylab='ASDR')
+
+# Barplot for Sweden
+barplot(height = sweden_data$asdr, 
+        names = sweden_data$age,
+        col = 'steelblue',
+        main = 'Sweden ASDR by age',
+        xlab = 'Age',
+        ylab = 'ASDR')
+
+
+# Barplot for the world
+barplot(height = world_data$asdr, 
+        names = world_data$age,
+        col = 'darkolivegreen',
+        main = 'World ASDR by age',
+        xlab = 'Age',
+        ylab = 'ASDR')
 ```
 
 The data shows us 2 spike locations for deaths by age: 75-80+, and 0-4. This means that (understandably) risk of mortality drastically increases as one becomes quite old, and infant mortality is the other main drive behind high death rates.
@@ -315,7 +366,7 @@ One way to understand the difference in the CDR between Kenya and Sweden is to c
 compute_pop_prop <- function(pop_data) {
 pop_data %>% 
     group_by(period) %>%
-    mutate(popP = py / sum(py)) %>%
+    mutate(pop_prop = py / sum(py)) %>%
     ungroup()
 }
 ```
@@ -330,9 +381,12 @@ sweden_data <- compute_pop_prop(sweden_data)
 ```
 
 ```{r counterfactual-CDR-computation}
-# Compute Kenyas CDR if Kenya had Sweden's population distribution
+# Compute Kenyas CDR if Kenya had Sweden's population distribution.
+# This is done by calculating Sweden's population proportion by period,
+# and multiplying it by Kenya's ASDR.
+
 mutate(kenya_data,
- temp_cdr  = asdr * sweden_data$popP) %>%
+ temp_cdr  = asdr * sweden_data$pop_prop) %>%
  group_by(period) %>%
  summarise(cdrre_sweden = sum(temp_cdr))
 ```
