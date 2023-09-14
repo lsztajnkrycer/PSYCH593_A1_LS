@@ -1,0 +1,13 @@
+List of variable names and descriptions for all 3 population sets:
+
+| Name       | Description                                                                             |
+|:-----------------------|:----------------------------------------------|
+| `country`  | Abbreviated country name                                                                |
+| `period`   | Period during which data are collected                                                  |
+| `age`      | Age group                                                                               |
+| `births`   | Number of births in thousands (i.e., number of children born to women of the age group) |
+| `deaths`   | Number of deaths in thousands                                                           |
+| `py.men`   | Person-years for men in thousands                                                       |
+| `py.women` | Person-years for women in thousands                                                     |
+
+Source: United Nations, Department of Economic and Social Affairs, Population Division (2013). *World Population Prospects: The 2012 Revision, DVD Edition.*
