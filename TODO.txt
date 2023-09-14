@@ -1,0 +1,45 @@
+COMMIT 1*: Modify style to align with Tidyverse where I missed instances of this:
+
+- plot code (e.g. lines 237-242)
+
+- indentation in:
+  - Lines 305-309
+  - Lines 382-387
+  - Lines 403-409
+  - Lines 447-452
+
+- Fix variable names where applicable
+(e.g. pop_data, population_data -> pop_data)
+
+- Omit r code output where not needed 
+(specifically in instances when I generate histograms)
+
+
+COMMIT 2*: Add comments and alter explanations to improve file (especially knitted) readability:
+
+- Bracketed notes describing the purpose of each cell don't show on knitted files (oops).
+I need to add comments mirroring or slightly elaborating on the bracketed notes so that they can be read in html.
+
+- elaborate on questions if/when they ask for specific time periods
+
+- more code commenting on other blocks, where appropriate
+(e.g. plot code)
+
+- out-of-block descriptions of blocks when more convenient or applicable than within-block comments.
+
+
+COMMIT 3*: Modify Visuals and add code
+
+
+*Note that this is the plan; additional commits may be required.
+Additionally, each of these commits take place after the base 2 required to set up the repository.
+So these are more like commits 3,4,5, than 1,2,3.
+
+- I can modify the ASFR/ASDR histograms to include overlapping data for easier comparison.
+
+- I can change axes (notably the x-axis) to be more readable on said histograms.
+
+- I can figure out how to insert r code into discussions when appropriate.
+
+
+

@@ -1,0 +1,42 @@
+	Peer Review Feedback – Assignment 1
+
+I really like the visuals that you added to certain problems, as well as the informative discussions about the results. 
+These made the report much easier to understand! The folders were also well organized which made the project as a whole easier to explore. 
+Here are some areas you could adjust to make the report easier to read and follow. 
+
+- Even though you give a “blueprint” on lines 102-123 for what each block in a question achieves, it would have been helpful to have the specific description above each block as well. 
+  When reading this in a knitted format, it’s difficult to follow what’s going on for the code in each problem. 
+  I think it would help the flow a lot to walk the reader through each solution.
+ 
+- I would suggest not outputting the raw numbers for situations where you provide an easier-to-interpret visual anyways, such as when you compare ASFR on lines 225-229.
+
+- I really like the histograms you provide in Problems 2 and 5! 
+  It would be a cool enhancement to have the Kenya and Sweden histograms overlap so we can directly compare them. 
+  - Additionally, it would be good to have some code commenting for the plots. 
+  - I also noticed that the plot code on lines 237-242 does not follow tidyverse style. 
+    Make sure to include spaces after commas and maybe break up the long line of code, while following appropriate code indentation. 
+
+- There are a few places where the code does not have tidyverse style indentation: 
+  - Lines 305-309
+  - Lines 382-387 (also needs spacing between operators)
+  - Lines 403-409 (break up long lines of code, also needs spacing after commas)
+  - Lines 447-452
+
+- This isn’t necessary, but I would suggest inserting r code in your discussions that refer directly to the values that you discuss. 
+For example, in Discussion #3, you could refer to birth rates directly by creating a variable from the code in lines 305-309 and call that directly in the discussion section. 
+
+- This is small, but in some functions you create the argument is called “pop_data” (e.g., line 207) and in others it’s called “population_data” (e.g., lines 282, 338). 
+It might be nice to have them be consistent across all functions. 
+
+- Your answer for Question 5 does not seem to be specific to the period of 2005-2010, which is what the question is asking for. 
+It looks like maybe the histograms are split by time period, but it is not clearly labeled. 
+It is also not clear for Question 6 whether the answer is specific to the 2005-2010 range. 
+
+- The variable “popP” created in a function on line 450 should have a tidyverse style name, such as pop_prop.
+
+- There are some places where more code commenting would be helpful. 
+While you noted that you don’t want to overcomment the code, I think some additional comments could be helpful, especially for the functions. 
+For example, it might be helpful to note that the function starting on line 282 will compute TFR for each time period. 
+
+
+I really appreciate the informative discussion pieces at the end of each question. It helps tie the results for each analysis together. Great job!
