@@ -1,4 +1,4 @@
-	Peer Review Feedback – Assignment 1
+	Peer Review Feedback – Assignment 1 (STUDENT)
 
 I really like the visuals that you added to certain problems, as well as the informative discussions about the results. 
 These made the report much easier to understand! The folders were also well organized which made the project as a whole easier to explore. 
@@ -40,3 +40,27 @@ For example, it might be helpful to note that the function starting on line 282 
 
 
 I really appreciate the informative discussion pieces at the end of each question. It helps tie the results for each analysis together. Great job!
+
+
+
+	VICTOR'S ADDITIONAL COMMENTS:
+
+Your classmate has done a thorough revision of your project. 
+Take their comments about spaces broadly because I found other lines than those mentioned that also failed to have the appropriate spacing, but also, there were lines mentioned in their feedback that I could not identify as having the issues (or being lines with code...). 
+Also, remember to put a space after the comment character # (see line 89).
+
+There were fewer issues with the indentation, but note that at some places you have 4 spaces for indentation, at others use the recommended 2, and sometimes none at all. 
+You may also want to add extra spaces for alignment at several places, such as lines 48-52, especially if you follow the advice to break some lines indenting the arguments.
+
+For character vectors, it is recommended to use double-quotes ".
+
+To include the values of computations in the text programmatically, use `r expression`. 
+For example, on line 226, you could use `r  as.integer(totals_world[1, "total_women"])`. 
+Note that, doubles are printed differently than integers and your tibble has the values a double numeric, hence the as.integer.
+
+Regarding you question about loading lintr. 
+You would not load the package on the script. 
+You would run lint on it separately, perhaps within a test script or just on the fly. 
+Be mindful that it will give plenty of warnings that do not require changes (most of them about not having definitions for function from a package and about column names used within tidyverse functions).
+
+You have done a great job at answering the question, finding ways to complement the code that was already available, and including meaningful commentary.

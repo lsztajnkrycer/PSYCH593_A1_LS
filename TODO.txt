@@ -16,13 +16,11 @@ COMPLETED
 (specifically in instances when I generate histograms)
 
 
-COMMIT 2*: Add comments and alter explanations to improve file (especially knitted) readability:
-PARTLY COMPLETED (more comments and out-of-block descriptions)
+COMMIT 1+*: Add comments and alter explanations to improve file (especially knitted) readability:
+COMPLETED
 
 - Bracketed notes describing the purpose of each cell don't show on knitted files (oops).
 I need to add comments mirroring or slightly elaborating on the bracketed notes so that they can be read in html.
-
-- elaborate on questions if/when they ask for specific time periods
 
 - more code commenting on other blocks, where appropriate
 (e.g. plot code)
@@ -30,12 +28,10 @@ I need to add comments mirroring or slightly elaborating on the bracketed notes 
 - out-of-block descriptions of blocks when more convenient or applicable than within-block comments.
 
 
-COMMIT 3*: Modify Visuals and add code
+COMMIT 2*: Begin to Modify Visuals and add code
+R CODE INSERTED
 
-
-*NOTE 1: that this is the plan; additional commits may be required.
-Additionally, each of these commits take place after the base 2 required to set up the repository.
-So these are more like commits 3,4,5, than 1,2,3.
+- elaborate on questions if/when they ask for specific time periods (moved from commit 1)
 
 - I can modify the ASFR/ASDR histograms to include overlapping data for easier comparison.
   - Although Q5 (for the ASDR plots) only calls for calculation of ASDR in the 2005-10 period,
@@ -46,8 +42,26 @@ So these are more like commits 3,4,5, than 1,2,3.
 
 - I can figure out how to insert r code into discussions when appropriate.
 
+- UPDATE: Extra feedback provided by Victor gave some additional recommendations.
+Notably, I should learn ggplot and change my plots to them for extra control/usability.
+So, this commit ends with an update of this TODO, feedback, and a revised third commit.
+
+COMMIT 3*: Implement Victor's suggestions and finish modifying visuals
+
+- Adjust indentations where needed, and add spaces for extra alignment
+  - e.g. lines 48-52, line 89, etc.
+
+- Check for single quotes (') and adjust to double quotes (") for character vectors
+
+- Big change: learn ggplot and refine the plots I previously created using base R.
+
 - Update HTML printout, as I have altered the graphs at this point
 
+
+
+*NOTE 1: that this is the plan; additional commits may be required.
+Additionally, each of these commits take place after the base 2 required to set up the repository.
+So these are more like commits 3,4,5, than 1,2,3.
 
 **NOTE 2: My peer reviewer must have been using a different text editor than qmd,
 as the lines mentioned in the review do not add up with the lines on my editor

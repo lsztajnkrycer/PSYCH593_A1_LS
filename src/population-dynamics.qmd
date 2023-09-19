@@ -18,7 +18,7 @@ editor: visual
 Understanding population dynamics is important for many areas of social science. We will calculate some basic demographic quantities of births and deaths for the world's population from two time periods: 1950 to 1955 and 2005 to 2010. We will analyze the following CSV data files - `Kenya.csv`, `Sweden.csv`, and `World.csv`. Each file contains population data for Kenya, Sweden, and the world, respectively. The table below presents the names and descriptions of the variables in each data set.
 
 | Name       | Description                                                                             |
-|:--------------------|:--------------------------------------------------|
+|:-----------|:----------------------------------------------------------------------------------------|
 | `country`  | Abbreviated country name                                                                |
 | `period`   | Period during which data are collected                                                  |
 | `age`      | Age group                                                                               |
@@ -167,12 +167,24 @@ Printing the columns doesn't give us a very good indication of how Kenya and Swe
 
 ```{r histograms-for-ASFR}
 # Generates a barplot that describes Kenya's ASFR's by age. Split by Period.
-barplot(height = kenya_data$asfr, 
-        names = kenya_data$age, 
+# Attempting to use a solution to manually generate x-ticks from stack overflow, with more control. https://stackoverflow.com/questions/19638633/set-different-positions-of-axis-labels-and-tick-marks-in-a-barplot
+
+at_tick <- seq_len(length(kenya_data$age)) # Get ticks for every bin of x_data
+
+barplot(height = kenya_data$asfr, # y-axis data, asfr
+        names = kenya_data$age, # x-axis data, age (5-year groups)
         col = 'darksalmon', # Ensures column color for Kenya is reddish
-        main = 'Kenya ASFR by age',
-        xlab = 'Age', 
-        ylab = 'ASFR')
+        main = 'Kenya ASFR by age', # Main plot title
+        xlab = 'Age', # x-axis label
+        ylab = 'ASFR', # y-axis label
+        axes = FALSE,
+        col.axis = "Green") # Remove axes, add them in manually
+
+axis(side = 2) # Add y-axis ticks
+axis(side = 1, # Add x-axis ticks manually using every age bin
+     at = at_tick - 1, # Allows use of every age bin
+     labels = kenya_data$age,
+     col = "Orange")
 
 
 # Another barplot, this time describing Sweden's ASFR's by age.
@@ -181,7 +193,7 @@ barplot(height = sweden_data$asfr,
         col = 'steelblue', # In contrast, column color for Sweden is blueish
         main = 'Sweden ASFR by age',
         xlab = 'Age',
-        ylab = 'ASFR')
+        ylab = 'ASFR',)
 
 ```
 
@@ -223,7 +235,7 @@ compute_tfr <- function(pop_data) {
 (sweden_tfr <- compute_tfr(sweden_data))
 ```
 
-The block below uses a pipline to give us a measure of *total* births, rather than birth (fertility) *rates,* by country. This is useful for comparing total births by country, and seeing if it matches up with fertility rate.
+The block below uses a pipeline to give us a measure of *total* births, rather than birth (fertility) *rates,* by country. This is useful for comparing total births by country, and seeing if it matches up with fertility rate.
 
 ```{r TFR-comparison}
 # Compute totals of women and births in the world by period
@@ -239,9 +251,19 @@ The block below uses a pipline to give us a measure of *total* births, rather th
 (changes_totals <- totals_world[2, -1] / totals_world[1, -1])
 ```
 
+```{r create-text-vars, include=FALSE}
+# Create text variables to reference in discussion 3 (at request of reviewer)
+total_women_1950s <- totals_world[1,2] %>% pull
+total_women_2000s <- totals_world[2,2] %>% pull
+
+total_births_1950s <- totals_world[1,3] %>% pull
+total_births_2000s <- totals_world[2,3] %>% pull
+
+```
+
 ### Discussion 3
 
-From the above 2 cells, we see that the number of women in the world has increased by 150%, from 6,555,686 in 1950/55 to 16,554,781 in 2005/10. However, the total number of births in the world has only increased by 38%, from \~488,891 to \~674,581. Although this is still an increase, it is reflective of the fact that people today live longer but have fewer children. Worldwide, TFR was halved from 5.0 to 2.54.
+From the above 2 cells, we see that the number of women in the world has increased by 150%, from `r total_women_1950s` in 1950/55 to `r total_women_2000s` in 2005/10. However, the total number of births in the world has only increased by 38%, from `r total_births_1950s` to `r total_births_2000s`. Although this is still an increase, it is reflective of the fact that people today live longer but have fewer children. Worldwide, TFR was halved from 5.0 to 2.54.
 
 ## Question 4
 
@@ -276,7 +298,7 @@ compute_cdr <- function(pop_data) {
 
 Similar to Crude Birth Rate, we notice 2 overarching trends:
 
-1\) In the 1950's, sweden_cdr \< world_cdr \< kenya_cdr, with sweden's death rate being about half of Kenya's and the World's death rate in 1950s. Death Rates nearly equalize in the 2000s
+1\) In the 1950's, `sweden_cdr < world_cdr < kenya_cdr`, with Sweden's death rate being about half of Kenya's and the World's death rate in 1950s. Death Rates nearly equalize in the 2000s
 
 2\) All CDR's are lower in the 2000s than in the 1950s, except for Sweden's, which stayed roughly the same but increased ever so slightly.
 
@@ -385,20 +407,22 @@ sweden_data <- compute_pop_prop(sweden_data)
 # This is done by calculating Sweden's population proportion by period,
 # and multiplying it by Kenya's ASDR.
 
-mutate(kenya_data,
+cdrre_table <- mutate(kenya_data,
  temp_cdr  = asdr * sweden_data$pop_prop) %>%
  group_by(period) %>%
  summarise(cdrre_sweden = sum(temp_cdr))
+
+# Display counterfactual cdr table and 
+# Get counterfactual cdr of 2005-2010 only, for discussion
+(cdrre_table)
+cdrre_2005_2010 <- cdrre_table[2,2] %>% pull 
+# ^ Using a single, in-line pipe of pull above to extract the actual number from the table. Else it just returns as a 1x1 table.
 ```
 
 ### Discussion 6
 
-As the comment in the previous cell explains, the counterfactual CDR we compute means we are computing Kenya's Crude Death Rate if it had Sweden's population distribution. For reference, the original CDR of Kenya is:
+As the comment in the previous cell explains, the counterfactual CDR we compute means we are computing Kenya's Crude Death Rate if it had Sweden's population distribution. For reference, the original CDR of Kenya in 2005-2010 was `r kenya_cdr`, vs the new counterfactual cdr is `r cdrre_2005_2010` .
 
-```{r kenya-CDR-recap}
-kenya_cdr
-```
-
-Comparing the two, we find that if Kenya had Sweden's population, its death count would have been slightly lower during the 50s, but substantially higher in the 2000s (more than double the rate). If we look back at the ASDR plots, we find that the death rate for older individuals is simply higher for Kenya than Sweden in the early 2000s (peaking at around 0.17 for 80+ year-olds in Kenya, vs. about 0.11 for 80+ year-olds in Sweden).
+Comparing the two, we find that if Kenya had Sweden's population, its death count would have been substantially higher in the 2000s (more than double the rate). If we look back at the ASDR plots, we find that the death rate for older individuals is simply higher for Kenya than Sweden in the early 2000s (peaking at around 0.17 for 80+ year-olds in Kenya, vs. about 0.11 for 80+ year-olds in Sweden).
 
 Since the mortality curve is less steep, there seem to be more old people living in Sweden. Put this population in Kenya, where the mortality rates for older folks are higher, and we see an increase in the (counterfactual) CDR.
