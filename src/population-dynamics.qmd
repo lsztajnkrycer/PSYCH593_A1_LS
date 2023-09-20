@@ -18,7 +18,7 @@ editor: visual
 Understanding population dynamics is important for many areas of social science. We will calculate some basic demographic quantities of births and deaths for the world's population from two time periods: 1950 to 1955 and 2005 to 2010. We will analyze the following CSV data files - `Kenya.csv`, `Sweden.csv`, and `World.csv`. Each file contains population data for Kenya, Sweden, and the world, respectively. The table below presents the names and descriptions of the variables in each data set.
 
 | Name       | Description                                                                             |
-|:-----------|:----------------------------------------------------------------------------------------|
+|:-------------|:---------------------------------------------------------|
 | `country`  | Abbreviated country name                                                                |
 | `period`   | Period during which data are collected                                                  |
 | `age`      | Age group                                                                               |
@@ -33,8 +33,7 @@ Source: United Nations, Department of Economic and Social Affairs, Population Di
 # Load packages ----
 library(tidyverse) # load tidyverse package to help ensure code is clean
 library(rprojroot) # load rprojroot to help with navigating project directory
-#library(lintr) # load package to confirm tidyverse style is being followed
-# NOTE: I want to load the lintr package, but currently I am not sure how to use it, so I am commenting it out for now. 
+library(ggplot2) # load ggplot2 to generate stronger barplots when needed
 ```
 
 Before reading the data, I declare global path variables to help navigate the directory better. As seen below, the "root path" (root_path) will be declared to the the folder containing the R project file. All subfolders within the project folder will then be declared as a path from root_path.
@@ -90,13 +89,13 @@ create_py <- function(dataset) {
   dataset$py.men + dataset$py.women
 }
 
-
 # Create new variable py = total person years for each data set
 # This uses the create_py function just defined, and also adjusts code to align with tidyverse style
 world_data$py <- create_py(world_data)
 kenya_data$py <- create_py(kenya_data)
 sweden_data$py <- create_py(sweden_data)
 ```
+
 
 Below is a second function block. The first block defines a function to compute total per-year subjects, and this block defines the actual CBR function based on the equation above (which uses total per-year counts).
 
@@ -138,7 +137,9 @@ The CBR is easy to understand but contains both men and women of all ages in the
 
 compute_asfr <- function(pop_data) {
   # Function to compute Age specific fertility rate (ASFR)
-  # Note that we do not have to compute a summary, nor the 5-year age ranges, because those are already nicely arranged by the cells in the data. We just have to compute an ASFR for each 5-year age row.
+  # Note that we do not have to compute a summary, nor the 5-year age ranges, because those are          already nicely arranged by the cells in the data. 
+  # We just have to compute an ASFR for each 5-year age row.
+  
   pop_data %>% 
     mutate(asfr = births / py.women)
 }
@@ -163,38 +164,120 @@ sweden_data$asfr
 
 ### Discussion 2
 
-Printing the columns doesn't give us a very good indication of how Kenya and Sweden compare, so I'll make a quick and dirty barplot with asfr on the y axis and age on the x axis:
+Printing the columns doesn't give us a very good indication of how Kenya and Sweden compare, so I'll make a set of barplots with asfr on the y axis and age on the x axis.
 
-```{r histograms-for-ASFR}
+Note that the first barplot analyzes Kenya's data (split by period), the second plot analyzes Sweden's data, and the third plot overlays Kenya's and Sweden's data for comparison. Before I make this plot, I will have to convert the age data from a string to a factor so that it can be plotted properly.
+
+```{r data-conversion-for-plots, message=FALSE}
+# Convert Kenya data to factor to avoid plot ordering
+# Kenya age is currently a string, so the x-axis sorts it alphabetically. This unfortunately puts all ages 0-40 in order, and then 5-9 comes after 45-49 and below 50-59, etc.
+# According to a stackoverflow post, one way to deal with this is to convert columns to factor variables with unique levels for each point to "force" order for strings. Levels can also be assigned or reassigned manually.
+
+kenya_data$age <- factor(kenya_data$age, levels = unique(kenya_data$age))
+
+# We repeat the same process for Sweden data and world data
+sweden_data$age <- factor(sweden_data$age, levels = unique(sweden_data$age))
+world_data$age <- factor(world_data$age, levels = unique(world_data$age))
+
+```
+
+
+```{r barplots-for-ASFR}
 # Generates a barplot that describes Kenya's ASFR's by age. Split by Period.
-# Attempting to use a solution to manually generate x-ticks from stack overflow, with more control. https://stackoverflow.com/questions/19638633/set-different-positions-of-axis-labels-and-tick-marks-in-a-barplot
+# Now switching to ggplot (hopefully for better results; barplot() didn't work well).
+# Additionally, ensuring character variables use double quotes " to align with tidyverse.
 
-at_tick <- seq_len(length(kenya_data$age)) # Get ticks for every bin of x_data
+# Useful link for setting and rotating text labels with ggplot: https://www.datanovia.com/en/blog/ggplot-axis-ticks-set-and-rotate-text-labels/
 
-barplot(height = kenya_data$asfr, # y-axis data, asfr
-        names = kenya_data$age, # x-axis data, age (5-year groups)
-        col = 'darksalmon', # Ensures column color for Kenya is reddish
-        main = 'Kenya ASFR by age', # Main plot title
-        xlab = 'Age', # x-axis label
-        ylab = 'ASFR', # y-axis label
-        axes = FALSE,
-        col.axis = "Green") # Remove axes, add them in manually
+# Plot overlap suggestion by https://stackoverflow.com/questions/6957549/overlaying-histograms-with-ggplot2-in-r
 
-axis(side = 2) # Add y-axis ticks
-axis(side = 1, # Add x-axis ticks manually using every age bin
-     at = at_tick - 1, # Allows use of every age bin
-     labels = kenya_data$age,
-     col = "Orange")
+# Barplot for Kenya data
+kenya_plot <- ggplot(
+  data = kenya_data,
+  mapping = aes(x = age, y = asfr, fill = period) # Set x and y axes to asfr and age, respectively
+  # NOTE: fill is required to fill the color into the bar. We sort and color by period, but if we do     not fill it in this mapping period, the bars seem to be grey and colorless.
+) +
+  labs( # Assign labels where still needed
+    title = "Kenya ASFR by age",
+    x = "Age (years)",
+    y = "ASFR"
+  ) +
+  geom_col() + # Create barplot using data specified above
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1) # rotate x ticks to be more readable
+  ) + 
+  scale_fill_manual(values = c("darksalmon", "darkorange")) + # add color by period
+  facet_wrap(~period) # Separate data by period
 
 
-# Another barplot, this time describing Sweden's ASFR's by age.
-barplot(height = sweden_data$asfr, 
-        names = sweden_data$age,
-        col = 'steelblue', # In contrast, column color for Sweden is blueish
-        main = 'Sweden ASFR by age',
-        xlab = 'Age',
-        ylab = 'ASFR',)
+# Barplot for Sweden data
+sweden_plot <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asfr, fill = period)
+) +
+  labs( # Assign labels where still needed
+    title = "Sweden ASFR by age",
+    x = "Age (years)",
+    y = "ASFR"
+  ) +
+  geom_col() + # Create barplot using data specified above
+  theme(
+    axis.text.x = element_text(angle = 90) # rotate x ticks to be more readable
+  ) + 
+  scale_fill_manual(values = c("steelblue", "darkseagreen")) +
+  facet_wrap(~period) # Separate data by period
 
+
+# Overlapping plot
+overlap_plot <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asfr)
+) +
+  labs(
+    title = "Overlapping ASFR by age",
+    subtitle = "Sorted by period, overlapping by country",
+    x = "Age (years)",
+    y = "ASFR",
+    color = "Legend",
+  ) +
+  scale_color_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue")) + # Alternative way of specifying scale fill and color values
+  scale_fill_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue")) +
+  geom_col(data = sweden_data, mapping = aes(color = "Sweden"), fill = "blue", alpha = 0.2) +
+  geom_col(data = kenya_data, mapping = aes(color = "Kenya"), fill = "darksalmon", alpha = 0.2) +
+  guides(color = guide_legend(
+    override.aes = list(fill = c("darksalmon", "blue"), alpha = 0.1))) + # Overrides aesthetics of the legend so that legend fill doesn't appear dark purple (mix of salmon and blue)
+  theme(axis.text.x = element_text(angle = 90)) + # rotate x ticks to be more readable
+  facet_wrap(~period)
+
+
+  kenya_plot
+  sweden_plot
+  overlap_plot
+
+```
+
+```{r test-overlap, message=FALSE, echo=FALSE, include = FALSE}
+overlap_plot <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asfr)
+) +
+  labs(
+    title = "Overlapping ASFR by age",
+    subtitle = "Sorted by period, overlapping by country",
+    x = "Age (years)",
+    y = "ASFR",
+    color = "Legend",
+  ) +
+  scale_color_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue")) + 
+  scale_fill_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue")) +
+  geom_col(data = sweden_data, mapping = aes(color = "Sweden"), fill = "blue", alpha = 0.2) +
+  geom_col(data = kenya_data, mapping = aes(color = "Kenya"), fill = "darksalmon", alpha = 0.2) +
+  guides(color = guide_legend(
+    override.aes = list(fill = c("darksalmon", "blue"), alpha = 0.1))) +
+  theme(axis.text.x = element_text(angle = 90)) + # rotate x ticks to be more readable
+  facet_wrap(~period)
+
+overlap_plot
 ```
 
 Although this isn't the best possible representation of data, it is easy to see the trends for each of the 5-year instances: data on the left corresponds to 1950-55 data; data on the right corresponds to 2005-10 data.
@@ -241,10 +324,10 @@ The block below uses a pipeline to give us a measure of *total* births, rather t
 # Compute totals of women and births in the world by period
 (
   world_data %>% 
-  group_by(period) %>% 
-  summarise(total_women = sum(py.women),
-  total_births = sum(births)) ->
-  totals_world
+    group_by(period) %>% 
+      summarise(total_women = sum(py.women),
+      total_births = sum(births)) ->
+      totals_world
 )
 
 # Compare how much these totals have changed
@@ -275,7 +358,7 @@ Next, we will examine another important demographic process: death. Compute the 
 ```{r CDR-function}
 # Function to compute the Crude death rate (CDR).
 # Again, this function computes CDR by period, and not total CDR across both periods.
-# It uilizes the formula provided above to do so.
+# It utilizes the formula provided above to do so.
 
 compute_cdr <- function(pop_data) {
   pop_data %>% 
@@ -318,8 +401,8 @@ One puzzling finding from the previous question is that the CDR for Kenya during
 # because it is already split into nice 5-year age gaps.
 
 compute_asdr <- function(pop_data) {
-pop_data %>% 
-mutate(asdr = deaths / py)
+  pop_data %>% 
+    mutate(asdr = deaths / py)
 }
 ```
 
@@ -337,37 +420,117 @@ sweden_data <- compute_asdr(sweden_data)
 We will once more plot this data for easier visualization
 
 ```{r histograms-for-ASDR}
-# Generate barplots which describe ASDR's by age, split by period,
-# for each dataset.
-# Using same column colors for each dataset (red for kenya).
-# For world data, we use green columns
 
 # Barplot for Kenya
-barplot(height = kenya_data$asdr,
-        names = kenya_data$age,
-        col = 'darksalmon',
-        main = 'Kenya ASDR by age',
-        xlab = 'Age',
-        ylab = 'ASDR')
-
+# Note that these plots should be very similar to the previous ones, so I will only comment notable     deviations or unexplained issues.
+kenya_plot_asdr <- ggplot(
+  data = kenya_data,
+  mapping = aes(x = age, y = asdr, fill = period)
+) + 
+  labs(
+    title = "Kenya ASDR by age",
+    x = "Age (years)",
+    y = "ASDR"
+  ) + 
+  geom_col() +
+  theme(
+    axis.text.x = element_text(angle = 90)
+  ) + 
+  scale_fill_manual(values = c("darksalmon", "darkorange")) +
+  facet_wrap(~period)
 
 # Barplot for Sweden
-barplot(height = sweden_data$asdr, 
-        names = sweden_data$age,
-        col = 'steelblue',
-        main = 'Sweden ASDR by age',
-        xlab = 'Age',
-        ylab = 'ASDR')
-
+sweden_plot_asdr <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asdr, fill = period)
+) + 
+  labs(
+    title = "Sweden ASDR by age",
+    x = "Age (years)",
+    y = "ASDR"
+  ) + 
+  geom_col() +
+  theme(
+    axis.text.x = element_text(angle = 90)
+  ) + 
+  scale_fill_manual(values = c("steelblue", "darkseagreen")) +
+  facet_wrap(~period)
 
 # Barplot for the world
-barplot(height = world_data$asdr, 
-        names = world_data$age,
-        col = 'darkolivegreen',
-        main = 'World ASDR by age',
-        xlab = 'Age',
-        ylab = 'ASDR')
+world_plot_asdr <- ggplot(
+  data = world_data,
+  mapping = aes(x = age, y = asdr, fill = period)
+) + 
+  labs(
+    title = "World ASDR by age",
+    x = "Age (years)",
+    y = "ASDR"
+  ) + 
+  geom_col() +
+  theme(
+    axis.text.x = element_text(angle = 90)
+  ) + 
+  scale_fill_manual(values = c("darkgreen", "darkkhaki")) +
+  facet_wrap(~period)
+
+
+overlap_plot_asdr <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asdr)
+) +
+  labs(
+    title = "Overlapping ASDR by age",
+    subtitle = "Sorted by period, overlapping by country",
+    x = "Age (years)",
+    y = "ASFR",
+    color = "Legend"
+  ) +
+  scale_color_manual(values = c("Sweden" = "blue", "Kenya" = "darksalmon", "World" = "darkgreen"), 
+                     aesthetics = c("color", "fill")) +
+  geom_col(data = sweden_data, mapping = aes(color = "Sweden"), fill = "blue", alpha = 0.2) +
+  geom_col(data = kenya_data, mapping = aes(color = "Kenya"), fill = "darksalmon", alpha = 0.2) +
+  geom_col(data = world_data, mapping = aes(color = "World"), fill = "darkgreen", alpha = 0.2) +
+  guides(color = guide_legend(
+    override.aes = list(fill = c("darksalmon", "blue", "darkgreen"), alpha = 0.1))) +
+  theme(axis.text.x = element_text(angle = 90)) + # rotate x ticks to be more readable
+  facet_wrap(~period)
+
+
+kenya_plot_asdr
+sweden_plot_asdr
+world_plot_asdr
+overlap_plot_asdr
+
 ```
+```{r test-overlap-plot, echo=FALSE, message=FALSE, include = FALSE}
+overlap_plot_asdr <- ggplot(
+  data = sweden_data,
+  mapping = aes(x = age, y = asdr)
+) +
+  labs(
+    title = "Overlapping ASDR by age",
+    subtitle = "Sorted by period, overlapping by country",
+    x = "Age (years)",
+    y = "ASFR",
+    color = "Legend"
+  ) +
+  #scale_color_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue")) + 
+  #scale_fill_manual(labels = c("Kenya", "Sweden"), values = c("darksalmon", "blue"))
+  scale_color_manual(values = c("Sweden" = "blue", "Kenya" = "darksalmon", "World" = "darkgreen"), 
+                     aesthetics = c("color", "fill")) +
+  geom_col(data = sweden_data, mapping = aes(color = "Sweden"), fill = "blue", alpha = 0.2) +
+  geom_col(data = kenya_data, mapping = aes(color = "Kenya"), fill = "darksalmon", alpha = 0.2) +
+  geom_col(data = world_data, mapping = aes(color = "World"), fill = "darkgreen", alpha = 0.2) +
+  guides(color = guide_legend(
+    override.aes = list(fill = c("darksalmon", "blue", "darkgreen"), alpha = 0.1))) +
+  theme(axis.text.x = element_text(angle = 90)) + # rotate x ticks to be more readable
+  facet_wrap(~period)
+
+
+overlap_plot_asdr
+```
+
+
 
 The data shows us 2 spike locations for deaths by age: 75-80+, and 0-4. This means that (understandably) risk of mortality drastically increases as one becomes quite old, and infant mortality is the other main drive behind high death rates.
 
@@ -387,9 +550,9 @@ One way to understand the difference in the CDR between Kenya and Sweden is to c
 # Function to compute population proportion by period
 compute_pop_prop <- function(pop_data) {
 pop_data %>% 
-    group_by(period) %>%
-    mutate(pop_prop = py / sum(py)) %>%
-    ungroup()
+  group_by(period) %>%
+  mutate(pop_prop = py / sum(py)) %>%
+  ungroup()
 }
 ```
 
@@ -408,9 +571,9 @@ sweden_data <- compute_pop_prop(sweden_data)
 # and multiplying it by Kenya's ASDR.
 
 cdrre_table <- mutate(kenya_data,
- temp_cdr  = asdr * sweden_data$pop_prop) %>%
- group_by(period) %>%
- summarise(cdrre_sweden = sum(temp_cdr))
+  temp_cdr  = asdr * sweden_data$pop_prop) %>%
+  group_by(period) %>%
+  summarise(cdrre_sweden = sum(temp_cdr))
 
 # Display counterfactual cdr table and 
 # Get counterfactual cdr of 2005-2010 only, for discussion

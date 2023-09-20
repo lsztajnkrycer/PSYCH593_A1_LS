@@ -47,6 +47,7 @@ Notably, I should learn ggplot and change my plots to them for extra control/usa
 So, this commit ends with an update of this TODO, feedback, and a revised third commit.
 
 COMMIT 3*: Implement Victor's suggestions and finish modifying visuals
+COMPLETED
 
 - Adjust indentations where needed, and add spaces for extra alignment
   - e.g. lines 48-52, line 89, etc.
@@ -56,6 +57,8 @@ COMMIT 3*: Implement Victor's suggestions and finish modifying visuals
 - Big change: learn ggplot and refine the plots I previously created using base R.
 
 - Update HTML printout, as I have altered the graphs at this point
+
+- Update figures in figures folder with their new variants
 
 
 

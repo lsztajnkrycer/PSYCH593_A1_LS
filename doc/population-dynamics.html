@@ -118,8 +118,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Understanding population dynamics is important for many areas of social science. We will calculate some basic demographic quantities of births and deaths for the world’s population from two time periods: 1950 to 1955 and 2005 to 2010. We will analyze the following CSV data files - <code>Kenya.csv</code>, <code>Sweden.csv</code>, and <code>World.csv</code>. Each file contains population data for Kenya, Sweden, and the world, respectively. The table below presents the names and descriptions of the variables in each data set.</p>
 <table class="table">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 65%">
+<col style="width: 19%">
+<col style="width: 80%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -195,24 +195,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>When questions contain special blocks (i.e.&nbsp;more than the 2 listed above), I will provide an extra description of that block’s purpose.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>create_py <span class="ot">&lt;-</span> <span class="cf">function</span>(dataset) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for any chosen dataset, combines the men and women per-year amounts into a total, per-year variable.</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#We need this total to compute the Crude Birth Rate of any country.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># For any chosen dataset, combines the men and women per-year amounts into a total, per-year variable.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We need this total to compute the Crude Birth Rate of any country</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  dataset<span class="sc">$</span>py.men <span class="sc">+</span> dataset<span class="sc">$</span>py.women</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create new variable py = total person years for each data set</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># This uses the create_py function just defined, and also adjusts code to align with tidyverse style</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>world_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(world_data)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(kenya_data)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sweden_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create new variable py = total person years for each data set</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># This uses the create_py function just defined, and also adjusts code to align with tidyverse style</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>world_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(world_data)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(kenya_data)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>sweden_data<span class="sc">$</span>py <span class="ot">&lt;-</span> <span class="fu">create_py</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Below is a second function block. The first block defines a function to compute total per-year subjects, and this block defines the actual CBR function based on the equation above (which uses total per-year counts).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the Crude Birth Rate (CBR)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The "pipe" `%&gt;%` from package `magrittr` takes the output from the left hand side and makes it the first argument of the expression on the right hand side,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>compute_cbr <span class="ot">&lt;-</span> <span class="cf">function</span>(population_data) {</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  population_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>compute_cbr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">cbr =</span> <span class="fu">sum</span>(births) <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span> <span class="co"># Summary based on equation given above</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
@@ -221,15 +220,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the CBR for each data set</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: putting () around each of the variables seems to cause their output to display. Keeping it this way for convenience of display.</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(world_cbr  <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(world_data)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(world_cbr  <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(world_data)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.03732863 0.02021593</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(kenya_cbr  <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(kenya_cbr  <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.05209490 0.03851507</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(sweden_cbr <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(sweden_cbr <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.01539614 0.01192554</code></pre>
 </div>
@@ -252,10 +251,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>compute_asfr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Function to compute Age specific fertility rate (ASFR)</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that we do not have to compute a summary, nor the 5-year age ranges, because those are already nicely arranged by the cells in the data. We just have to compute an ASFR for each 5-year age row.</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">asfr=</span>births <span class="sc">/</span> py.women)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that we do not have to compute a summary, nor the 5-year age ranges, because those are          already nicely arranged by the cells in the data. </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We just have to compute an ASFR for each 5-year age row.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">asfr =</span> births <span class="sc">/</span> py.women)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ASFR for each data set</span></span>
@@ -266,7 +267,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This 3rd block allows us to numerically compare asfr counts for Kenya and Sweden, but it is a little hard to interpret.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare ASFRs for Kenya and Sweden</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>asfr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output suppressed by recommendation. Histograms are used for more effective </span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># comparison below.</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>asfr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.00000000 0.00000000 0.00000000 0.16884585 0.35596942 0.34657814
  [7] 0.28946367 0.20644016 0.11193267 0.03905205 0.00000000 0.00000000
@@ -287,15 +290,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="discussion-2" class="level3">
 <h3 class="anchored" data-anchor-id="discussion-2">Discussion 2</h3>
-<p>Printing the columns doesn’t give us a very good indication of how Kenya and Sweden compare, so I’ll make a quick and dirty barplot with asfr on the y axis and age on the x axis:</p>
+<p>Printing the columns doesn’t give us a very good indication of how Kenya and Sweden compare, so I’ll make a set of barplots with asfr on the y axis and age on the x axis.</p>
+<p>Note that the first barplot analyzes Kenya’s data (split by period), the second plot analyzes Sweden’s data, and the third plot overlays Kenya’s and Sweden’s data for comparison. Before I make this plot, I will have to convert the age data from a string to a factor so that it can be plotted properly.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="at">height =</span> kenya_data<span class="sc">$</span>asfr, <span class="at">names =</span> kenya_data<span class="sc">$</span>age,<span class="at">col=</span><span class="st">'darksalmon'</span>,<span class="at">main=</span><span class="st">'Kenya ASFR by age'</span>,<span class="at">xlab=</span><span class="st">'Age'</span>,<span class="at">ylab=</span><span class="st">'ASFR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="population-dynamics_files/figure-html/histograms-for-ASFR-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Kenya data to factor to avoid plot ordering</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Kenya age is currently a string, so the x-axis sorts it alphabetically. This unfortunately puts all ages 0-40 in order, and then 5-9 comes after 45-49 and below 50-59, etc.</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># According to a stackoverflow post, one way to deal with this is to convert columns to factor variables with unique levels for each point to "force" order for strings. Levels can also be assigned or reassigned manually.</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">factor</span>(kenya_data<span class="sc">$</span>age, <span class="at">levels =</span> <span class="fu">unique</span>(kenya_data<span class="sc">$</span>age))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># We repeat the same process for Sweden data and world data</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>sweden_data<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">factor</span>(sweden_data<span class="sc">$</span>age, <span class="at">levels =</span> <span class="fu">unique</span>(sweden_data<span class="sc">$</span>age))</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>world_data<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">factor</span>(world_data<span class="sc">$</span>age, <span class="at">levels =</span> <span class="fu">unique</span>(world_data<span class="sc">$</span>age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="at">height =</span> sweden_data<span class="sc">$</span>asfr, <span class="at">names =</span> sweden_data<span class="sc">$</span>age,<span class="at">col=</span><span class="st">'steelblue'</span>,<span class="at">main=</span><span class="st">'Sweden ASFR by age'</span>,<span class="at">xlab=</span><span class="st">'Age'</span>,<span class="at">ylab=</span><span class="st">'ASFR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generates a barplot that describes Kenya's ASFR's by age. Split by Period.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Now switching to ggplot (hopefully for better results; barplot() didn't work well).</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Additionally, ensuring character variables use double quotes " to align with tidyverse.</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Useful link for setting and rotating text labels with ggplot: https://www.datanovia.com/en/blog/ggplot-axis-ticks-set-and-rotate-text-labels/</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot overlap suggestion by https://stackoverflow.com/questions/6957549/overlaying-histograms-with-ggplot2-in-r</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot for Kenya data</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>kenya_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> kenya_data,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asfr, <span class="at">fill =</span> period) <span class="co"># Set x and y axes to asfr and age, respectively</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span><span class="al">NOTE</span><span class="co">: fill is required to fill the color into the bar. We sort and color by period, but if we do     not fill it in this mapping period, the bars seem to be grey and colorless.</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>( <span class="co"># Assign labels where still needed</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Kenya ASFR by age"</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASFR"</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="co"># Create barplot using data specified above</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>) <span class="co"># rotate x ticks to be more readable</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"darkorange"</span>)) <span class="sc">+</span> <span class="co"># add color by period</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period) <span class="co"># Separate data by period</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot for Sweden data</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>sweden_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sweden_data,</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asfr, <span class="at">fill =</span> period)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>( <span class="co"># Assign labels where still needed</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sweden ASFR by age"</span>,</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASFR"</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="co"># Create barplot using data specified above</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>) <span class="co"># rotate x ticks to be more readable</span></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"darkseagreen"</span>)) <span class="sc">+</span></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period) <span class="co"># Separate data by period</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlapping plot</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>overlap_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sweden_data,</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asfr)</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Overlapping ASFR by age"</span>,</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Sorted by period, overlapping by country"</span>,</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASFR"</span>,</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Legend"</span>,</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Kenya"</span>, <span class="st">"Sweden"</span>), <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"blue"</span>)) <span class="sc">+</span> <span class="co"># Alternative way of specifying scale fill and color values</span></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Kenya"</span>, <span class="st">"Sweden"</span>), <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">data =</span> sweden_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Sweden"</span>), <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">data =</span> kenya_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Kenya"</span>), <span class="at">fill =</span> <span class="st">"darksalmon"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"blue"</span>), <span class="at">alpha =</span> <span class="fl">0.1</span>))) <span class="sc">+</span> <span class="co"># Overrides aesthetics of the legend so that legend fill doesn't appear dark purple (mix of salmon and blue)</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span> <span class="co"># rotate x ticks to be more readable</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period)</span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>  kenya_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="population-dynamics_files/figure-html/histograms-for-ASFR-2.png" class="img-fluid" width="672"></p>
+<p><img src="population-dynamics_files/figure-html/barplots-for-ASFR-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  sweden_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="population-dynamics_files/figure-html/barplots-for-ASFR-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>  overlap_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="population-dynamics_files/figure-html/barplots-for-ASFR-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Although this isn’t the best possible representation of data, it is easy to see the trends for each of the 5-year instances: data on the left corresponds to 1950-55 data; data on the right corresponds to 2005-10 data.</p>
@@ -315,40 +401,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="answer-3" class="level3">
 <h3 class="anchored" data-anchor-id="answer-3">Answer 3</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the total fertility rate (TFR)</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>compute_tfr <span class="ot">&lt;-</span> <span class="cf">function</span>(population_data) {</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  population_data <span class="sc">%&gt;%</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">tfr=</span><span class="dv">5</span> <span class="sc">*</span><span class="fu">sum</span>(asfr)) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the total fertility rate (TFR)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that this computes TFR for each time period, </span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rather than the total across both periods.</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>compute_tfr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">tfr =</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">sum</span>(asfr)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the TFR for each data set</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>(world_tfr  <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the TFR for each data set</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>(world_tfr  <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5.007248 2.543623</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(kenya_tfr  <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(kenya_tfr  <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7.591410 4.879568</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(sweden_tfr <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(sweden_tfr <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.226917 1.902764</code></pre>
 </div>
 </div>
-<p>The block below uses a pipline to give us a measure of <em>total</em> births, rather than birth (fertility) <em>rates,</em> by country. This is useful for comparing total births by country, and seeing if it matches up with fertility rate.</p>
+<p>The block below uses a pipeline to give us a measure of <em>total</em> births, rather than birth (fertility) <em>rates,</em> by country. This is useful for comparing total births by country, and seeing if it matches up with fertility rate.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute totals of women and births in the world by period</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  world_data <span class="sc">%&gt;%</span> </span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_women=</span><span class="fu">sum</span>(py.women),</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">total_births=</span><span class="fu">sum</span>(births)) <span class="ot">-&gt;</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  totals_world</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute totals of women and births in the world by period</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  world_data <span class="sc">%&gt;%</span> </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">total_women =</span> <span class="fu">sum</span>(py.women),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_births =</span> <span class="fu">sum</span>(births)) <span class="ot">-&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>      totals_world</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   period    total_women total_births
@@ -356,8 +444,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1 1950-1955    6555686.      488892.
 2 2005-2010   16554781.      674581.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare how much these totals have changed</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>(changes_totals <span class="ot">&lt;-</span> totals_world[<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> totals_world[<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare how much these totals have changed</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>(changes_totals <span class="ot">&lt;-</span> totals_world[<span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> totals_world[<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  total_women total_births
 1    2.525256     1.379818</code></pre>
@@ -366,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="discussion-3" class="level3">
 <h3 class="anchored" data-anchor-id="discussion-3">Discussion 3</h3>
-<p>From the above 2 cells, we see that the number of women in the world has increased by 150%, from 6,555,686 in 1950/55 to 16,554,781 in 2005/10. However, the total number of births in the world has only increased by 38%, from ~488,891 to ~674,581. Although this is still an increase, it is reflective of the fact that people today live longer but have fewer children. Worldwide, TFR was halved from 5.0 to 2.54.</p>
+<p>From the above 2 cells, we see that the number of women in the world has increased by 150%, from 6.5556855^{6} in 1950/55 to 1.6554781^{7} in 2005/10. However, the total number of births in the world has only increased by 38%, from 4.8889153^{5} to 6.7458127^{5}. Although this is still an increase, it is reflective of the fact that people today live longer but have fewer children. Worldwide, TFR was halved from 5.0 to 2.54.</p>
 </section>
 </section>
 <section id="question-4" class="level2">
@@ -376,27 +464,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
      =  \frac{\text{number of deaths}}{\text{number of person-years lived}}
   \]</span> Briefly describe patterns you observe in the resulting CDRs.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the Crude death rate (CDR)</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>compute_cdr <span class="ot">&lt;-</span> <span class="cf">function</span>(population_data) {</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  population_data <span class="sc">%&gt;%</span> </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">cbr =</span> <span class="fu">sum</span>(deaths) <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the Crude death rate (CDR).</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Again, this function computes CDR by period, and not total CDR across both periods.</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># It utilizes the formula provided above to do so.</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>compute_cdr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">cbr =</span> <span class="fu">sum</span>(deaths) <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="answer-4" class="level3">
 <h3 class="anchored" data-anchor-id="answer-4">Answer 4</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the CDR for each data set</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>(world_cdr  <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the CDR for each data set</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>(world_cdr  <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.019318929 0.008166083</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>(kenya_cdr  <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(kenya_cdr  <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02396254 0.01038914</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(sweden_cdr <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>(sweden_cdr <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.009844842 0.009968455</code></pre>
 </div>
@@ -405,7 +496,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="discussion-4" class="level3">
 <h3 class="anchored" data-anchor-id="discussion-4">Discussion 4</h3>
 <p>Similar to Crude Birth Rate, we notice 2 overarching trends:</p>
-<p>1) In the 1950’s, sweden_cdr &lt; world_cdr &lt; kenya_cdr, with sweden’s death rate being about half of Kenya’s and the World’s death rate in 1950s. Death Rates nearly equalize in the 2000s</p>
+<p>1) In the 1950’s, <code>sweden_cdr &lt; world_cdr &lt; kenya_cdr</code>, with Sweden’s death rate being about half of Kenya’s and the World’s death rate in 1950s. Death Rates nearly equalize in the 2000s</p>
 <p>2) All CDR’s are lower in the 2000s than in the 1950s, except for Sweden’s, which stayed roughly the same but increased ever so slightly.</p>
 </section>
 </section>
@@ -416,37 +507,120 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     \ = \ \frac{\text{number of deaths for people of age $[x,\ x+\delta)$}}
                {\text{number of person-years of people of age $[x,\ x+\delta)$}}
   \]</span> Calculate the ASDR for each age group, separately for Kenya and Sweden, during the period of 2005-2010. Briefly describe the pattern you observe.</p>
+<p><strong>NOTE:</strong> Although this question only calls for calculation of ASDR in the 2005-10 period, I think that the question can only be properly answered if we compare our results to the initial 50s period, so I am keeping both periods. See the discussion for a proper comparison.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute Age specific death rate (ASDR)</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>compute_asdr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>pop_data <span class="sc">%&gt;%</span> </span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">asdr=</span>deaths<span class="sc">/</span>py) <span class="co">#again, we mutate instead of summarize the data because it is already split into nice 5-year age gaps</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute Age specific death rate (ASDR).</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Again, we mutate instead of summarize the data </span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># because it is already split into nice 5-year age gaps.</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>compute_asdr <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">asdr =</span> deaths <span class="sc">/</span> py)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="answer-5" class="level3">
 <h3 class="anchored" data-anchor-id="answer-5">Answer 5</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ASDR for each data set</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>world_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(world_data)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>kenya_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(kenya_data)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ASDR for each data set</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>world_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(world_data)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>kenya_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(kenya_data)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="discussion-5" class="level3">
 <h3 class="anchored" data-anchor-id="discussion-5">Discussion 5</h3>
 <p>We will once more plot this data for easier visualization</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="at">height =</span> kenya_data<span class="sc">$</span>asdr, <span class="at">names =</span> kenya_data<span class="sc">$</span>age,<span class="at">col=</span><span class="st">'darksalmon'</span>,<span class="at">main=</span><span class="st">'Kenya ASDR by age'</span>,<span class="at">xlab=</span><span class="st">'Age'</span>,<span class="at">ylab=</span><span class="st">'ASDR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot for Kenya</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that these plots should be very similar to the previous ones, so I will only comment notable     deviations or unexplained issues.</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>kenya_plot_asdr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> kenya_data,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asdr, <span class="at">fill =</span> period)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Kenya ASDR by age"</span>,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASDR"</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"darkorange"</span>)) <span class="sc">+</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period)</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot for Sweden</span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>sweden_plot_asdr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sweden_data,</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asdr, <span class="at">fill =</span> period)</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sweden ASDR by age"</span>,</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASDR"</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"darkseagreen"</span>)) <span class="sc">+</span></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period)</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Barplot for the world</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>world_plot_asdr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> world_data,</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asdr, <span class="at">fill =</span> period)</span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"World ASDR by age"</span>,</span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASDR"</span></span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)</span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"darkgreen"</span>, <span class="st">"darkkhaki"</span>)) <span class="sc">+</span></span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period)</span>
+<span id="cb41-52"><a href="#cb41-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-54"><a href="#cb41-54" aria-hidden="true" tabindex="-1"></a>overlap_plot_asdr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb41-55"><a href="#cb41-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sweden_data,</span>
+<span id="cb41-56"><a href="#cb41-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> asdr)</span>
+<span id="cb41-57"><a href="#cb41-57" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Overlapping ASDR by age"</span>,</span>
+<span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Sorted by period, overlapping by country"</span>,</span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"ASFR"</span>,</span>
+<span id="cb41-63"><a href="#cb41-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Legend"</span></span>
+<span id="cb41-64"><a href="#cb41-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb41-65"><a href="#cb41-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Sweden"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Kenya"</span> <span class="ot">=</span> <span class="st">"darksalmon"</span>, <span class="st">"World"</span> <span class="ot">=</span> <span class="st">"darkgreen"</span>), </span>
+<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>                     <span class="at">aesthetics =</span> <span class="fu">c</span>(<span class="st">"color"</span>, <span class="st">"fill"</span>)) <span class="sc">+</span></span>
+<span id="cb41-67"><a href="#cb41-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">data =</span> sweden_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Sweden"</span>), <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">data =</span> kenya_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Kenya"</span>), <span class="at">fill =</span> <span class="st">"darksalmon"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">data =</span> world_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"World"</span>), <span class="at">fill =</span> <span class="st">"darkgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb41-70"><a href="#cb41-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(</span>
+<span id="cb41-71"><a href="#cb41-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"darksalmon"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>), <span class="at">alpha =</span> <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb41-72"><a href="#cb41-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span> <span class="co"># rotate x ticks to be more readable</span></span>
+<span id="cb41-73"><a href="#cb41-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>period)</span>
+<span id="cb41-74"><a href="#cb41-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-75"><a href="#cb41-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-76"><a href="#cb41-76" aria-hidden="true" tabindex="-1"></a>kenya_plot_asdr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="population-dynamics_files/figure-html/histograms-for-ASDR-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="at">height =</span> sweden_data<span class="sc">$</span>asdr, <span class="at">names =</span> sweden_data<span class="sc">$</span>age,<span class="at">col=</span><span class="st">'steelblue'</span>,<span class="at">main=</span><span class="st">'Sweden ASDR by age'</span>,<span class="at">xlab=</span><span class="st">'Age'</span>,<span class="at">ylab=</span><span class="st">'ASDR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>sweden_plot_asdr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="population-dynamics_files/figure-html/histograms-for-ASDR-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="at">height =</span> world_data<span class="sc">$</span>asdr, <span class="at">names =</span> world_data<span class="sc">$</span>age,<span class="at">col=</span><span class="st">'darkolivegreen'</span>,<span class="at">main=</span><span class="st">'World ASDR by age'</span>,<span class="at">xlab=</span><span class="st">'Age'</span>,<span class="at">ylab=</span><span class="st">'ASDR'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>world_plot_asdr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="population-dynamics_files/figure-html/histograms-for-ASDR-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>overlap_plot_asdr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="population-dynamics_files/figure-html/histograms-for-ASDR-4.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The data shows us 2 spike locations for deaths by age: 75-80+, and 0-4. This means that (understandably) risk of mortality drastically increases as one becomes quite old, and infant mortality is the other main drive behind high death rates.</p>
@@ -462,28 +636,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     \times P_{[5, 10)} + \cdots
   \]</span> where <span class="math inline">\(P_{[x, x+\delta)}\)</span> is the proportion of the population in the age range <span class="math inline">\([x, x+\delta)\)</span>. We compute this as the ratio of person-years in that age range relative to the total person-years across all age ranges. To conduct this counterfactual analysis, we use <span class="math inline">\(\text{ASDR}_{[x,x+\delta)}\)</span> from Kenya and <span class="math inline">\(P_{[x,x+\delta)}\)</span> from Sweden during the period of 2005–2010. That is, first calculate the age-specific population proportions for Sweden and then use them to compute the counterfactual CDR for Kenya. How does this counterfactual CDR compare with the original CDR of Kenya? Briefly interpret the result.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute population proportion by period</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>compute_pop_prop <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>pop_data <span class="sc">%&gt;%</span> </span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">popP =</span> py <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute population proportion by period</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>compute_pop_prop <span class="ot">&lt;-</span> <span class="cf">function</span>(pop_data) {</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>pop_data <span class="sc">%&gt;%</span> </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pop_prop =</span> py <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="answer-6" class="level3">
 <h3 class="anchored" data-anchor-id="answer-6">Answer 6</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute population proportion for each data set</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>world_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(world_data)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>kenya_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(kenya_data)</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute population proportion for each data set</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>world_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(world_data)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>kenya_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(kenya_data)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Kenyas CDR if Kenya had Sweden's population distribution</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(kenya_data,</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a> <span class="at">temp_cdr  =</span> asdr <span class="sc">*</span> sweden_data<span class="sc">$</span>popP) <span class="sc">%&gt;%</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">summarise</span>(<span class="at">cdrre_sweden =</span> <span class="fu">sum</span>(temp_cdr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Kenyas CDR if Kenya had Sweden's population distribution.</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This is done by calculating Sweden's population proportion by period,</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and multiplying it by Kenya's ASDR.</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>cdrre_table <span class="ot">&lt;-</span> <span class="fu">mutate</span>(kenya_data,</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_cdr  =</span> asdr <span class="sc">*</span> sweden_data<span class="sc">$</span>pop_prop) <span class="sc">%&gt;%</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cdrre_sweden =</span> <span class="fu">sum</span>(temp_cdr))</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Display counterfactual cdr table and </span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get counterfactual cdr of 2005-2010 only, for discussion</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>(cdrre_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   period    cdrre_sweden
@@ -491,18 +672,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1 1950-1955       0.0257
 2 2005-2010       0.0232</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>cdrre_2005_2010 <span class="ot">&lt;-</span> cdrre_table[<span class="dv">2</span>,<span class="dv">2</span>] <span class="sc">%&gt;%</span> pull </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ^ Using a single, in-line pipe of pull above to extract the actual number from the table. Else it just returns as a 1x1 table.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="discussion-6" class="level3">
 <h3 class="anchored" data-anchor-id="discussion-6">Discussion 6</h3>
-<p>As the comment in the previous cell explains, the counterfactual CDR we compute means we are computing Kenya’s Crude Death Rate if it had Sweden’s population distribution. For reference, the original CDR of Kenya is:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>kenya_cdr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.02396254 0.01038914</code></pre>
-</div>
-</div>
-<p>Comparing the two, we find that if Kenya had Sweden’s population, its death count would have been slightly lower during the 50s, but substantially higher in the 2000s (more than double the rate). If we look back at the ASDR plots, we find that the death rate for older individuals is simply higher for Kenya than Sweden in the early 2000s (peaking at around 0.17 for 80+ year-olds in Kenya, vs.&nbsp;about 0.11 for 80+ year-olds in Sweden).</p>
+<p>As the comment in the previous cell explains, the counterfactual CDR we compute means we are computing Kenya’s Crude Death Rate if it had Sweden’s population distribution. For reference, the original CDR of Kenya in 2005-2010 was 0.0239625, 0.0103891, vs the new counterfactual cdr is 0.0232165 .</p>
+<p>Comparing the two, we find that if Kenya had Sweden’s population, its death count would have been substantially higher in the 2000s (more than double the rate). If we look back at the ASDR plots, we find that the death rate for older individuals is simply higher for Kenya than Sweden in the early 2000s (peaking at around 0.17 for 80+ year-olds in Kenya, vs.&nbsp;about 0.11 for 80+ year-olds in Sweden).</p>
 <p>Since the mortality curve is less steep, there seem to be more old people living in Sweden. Put this population in Kenya, where the mortality rates for older folks are higher, and we see an increase in the (counterfactual) CDR.</p>
 </section>
 </section>
